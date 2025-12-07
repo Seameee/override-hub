@@ -14,6 +14,10 @@
 
   - [selfuse_test_remote.yaml](https://raw.githubusercontent.com/Seameee/override-hub/refs/heads/main/selfuse_test_remote.yaml) 和 [selfuse_test_local.yaml](https://raw.githubusercontent.com/Seameee/override-hub/refs/heads/main/selfuse_test_local.yaml),之前的配置已不再更新,请使用这两个
 
+### mihomo 配置
+Shadowrocket 用户可以使用这个配置文件,与 mihomo 配置分组和分流基本相同
+[Shadowrocket.conf](https://github.com/Seameee/override-hub/blob/main/Shadowrocket.conf)
+
 ### sub-store 懒人配置
 预置了 sub-store 的懒人配置，导入后添加你的订阅就能使用，推荐配合查看[图文版教程](https://linux.do/t/topic/660141/86)
 1. 组合订阅模板

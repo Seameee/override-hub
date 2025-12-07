@@ -14,7 +14,7 @@
 
   - [selfuse_test_remote.yaml](https://raw.githubusercontent.com/Seameee/override-hub/refs/heads/main/selfuse_test_remote.yaml) 和 [selfuse_test_local.yaml](https://raw.githubusercontent.com/Seameee/override-hub/refs/heads/main/selfuse_test_local.yaml),之前的配置已不再更新,请使用这两个
 
-### mihomo 配置
+### Shadowrocket 配置
 Shadowrocket 用户可以使用这个配置文件,与 mihomo 配置分组和分流基本相同
 [Shadowrocket.conf](https://github.com/Seameee/override-hub/blob/main/Shadowrocket.conf)
 

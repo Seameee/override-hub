@@ -290,6 +290,7 @@ rules:
   - RULE-SET,reject_domainset,REJECT
   - RULE-SET,reject_non_ip_drop,REJECT-DROP
   - RULE-SET,reject_non_ip_no_drop,REJECT
+  - RULE-SET,ai_non_ip,人工智能
   - RULE-SET,cdn_domainset,节点选择
   - RULE-SET,cdn_non_ip,节点选择
   - RULE-SET,stream_non_ip,国外媒体
@@ -301,7 +302,6 @@ rules:
   - RULE-SET,apple_cn_non_ip,DIRECT
   - RULE-SET,apple_services,苹果服务
   - RULE-SET,microsoft_non_ip,微软服务
-  - RULE-SET,ai_non_ip,人工智能
   - RULE-SET,global_non_ip,节点选择
   - RULE-SET,domestic_non_ip,DIRECT
   - RULE-SET,cn,DIRECT

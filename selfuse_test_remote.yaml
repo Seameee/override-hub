@@ -16,7 +16,7 @@ profile:
   store-fake-ip: true
 unified-delay: true
 tcp-concurrent: true
-global-client-fingerprint: chrome
+global-client-fingerprint: random
 
 ### DNS配置
 dns:

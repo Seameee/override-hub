@@ -168,16 +168,6 @@ rule-providers:
     url: https://ruleset.skk.moe/Clash/ip/reject.txt
     path: ./rule_set/sukkaw_ruleset/reject_ip.txt
 
-  cdn_domainset:
-    <<: *RuleSet_domain
-    url: https://ruleset.skk.moe/Clash/domainset/cdn.txt
-    path: ./rule_set/sukkaw_ruleset/cdn_domainset.txt
-
-  cdn_non_ip:
-    <<: *RuleSet_domain
-    url: https://ruleset.skk.moe/Clash/non_ip/cdn.txt
-    path: ./rule_set/sukkaw_ruleset/cdn_non_ip.txt
-
   # 所有流媒体（包括上述所有流媒体）
   stream_non_ip:
     <<: *RuleSet_classical
@@ -284,8 +274,6 @@ rules:
   - RULE-SET,reject_non_ip_drop,REJECT-DROP
   - RULE-SET,reject_non_ip_no_drop,REJECT
   - RULE-SET,ai_non_ip,人工智能
-  - RULE-SET,cdn_domainset,节点选择
-  - RULE-SET,cdn_non_ip,节点选择
   - RULE-SET,stream_non_ip,国外媒体
   - RULE-SET,telegram_non_ip,电报信息
   - RULE-SET,apple_cdn,DIRECT

@@ -9,7 +9,7 @@ find-process-mode: strict
 ### 如果使用的是裸核，需要将下面的注释去掉，方便ui界面的使用
 # external-controller: 0.0.0.0:9988
 # external-ui: ui
-# external-ui-url: 'https://testingcf.jsdelivr.net/gh/Zephyruso/zashboard@releases/latest/download/dist.zip'
+# external-ui-url: 'https://mirrors.seaya.link/https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip'
 # secret: "114514yijiuyijiubayiling"
 profile:
   store-selected: true

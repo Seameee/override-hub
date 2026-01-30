@@ -106,6 +106,7 @@ proxy-groups:
   # 应用分组
   - {name: 电报信息, type: select, proxies: [节点选择, 自动选择, 手动选择, 省流选择, 高级选择, 中继选择, 落地选择, 节点轮询, 香港节点, 日本节点, 韩国节点, 狮城节点, 美国节点, 英国节点, 法国节点, 德国节点, 台湾节点], icon: https://testingcf.jsdelivr.net/gh/Orz-3/mini@master/Color/Telegram.png}
   - {name: 人工智能, type: select, proxies: [狮城节点, 节点选择, 自动选择, 手动选择, 省流选择, 高级选择, 中继选择, 落地选择, 节点轮询, 香港节点, 日本节点, 韩国节点, 美国节点, 英国节点, 法国节点, 德国节点, 台湾节点], icon: https://testingcf.jsdelivr.net/gh/Orz-3/mini@master/Color/OpenAI.png}
+  - {name: 下载服务, type: select, proxies: [节点选择, 自动选择, 手动选择, 省流选择, 高级选择, 中继选择, 落地选择, 节点轮询, 香港节点, 日本节点, 韩国节点, 狮城节点, 美国节点, 英国节点, 法国节点, 德国节点, 台湾节点], icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png}
   - {name: 苹果服务, type: select, proxies: [DIRECT, 节点选择, 自动选择, 手动选择, 省流选择, 高级选择, 中继选择, 落地选择, 节点轮询, 香港节点, 日本节点, 韩国节点, 狮城节点, 美国节点, 英国节点, 法国节点, 德国节点, 台湾节点], icon: https://testingcf.jsdelivr.net/gh/Orz-3/mini@master/Color/Apple.png}
   - {name: 微软服务, type: select, proxies: [DIRECT, 节点选择, 自动选择, 手动选择, 省流选择, 高级选择, 中继选择, 落地选择, 节点轮询, 香港节点, 日本节点, 韩国节点, 狮城节点, 美国节点, 英国节点, 法国节点, 德国节点, 台湾节点], icon: https://testingcf.jsdelivr.net/gh/Orz-3/mini@master/Color/Microsoft.png}
   - {name: 国外媒体, type: select, proxies: [节点选择, 自动选择, 手动选择, 省流选择, 高级选择, 中继选择, 落地选择, 节点轮询, 香港节点, 日本节点, 韩国节点, 狮城节点, 美国节点, 英国节点, 法国节点, 德国节点, 台湾节点], icon: https://testingcf.jsdelivr.net/gh/Orz-3/mini@master/Color/Streaming.png}
@@ -283,8 +284,8 @@ rules:
   - RULE-SET,stream_non_ip,国外媒体
   - RULE-SET,telegram_non_ip,电报信息
   - RULE-SET,apple_cdn,DIRECT
-  - RULE-SET,download_domainset,省流选择
-  - RULE-SET,download_non_ip,省流选择
+  - RULE-SET,download_domainset,下载服务
+  - RULE-SET,download_non_ip,下载服务
   - RULE-SET,microsoft_cdn_non_ip,DIRECT
   - RULE-SET,apple_cn_non_ip,DIRECT
   - RULE-SET,apple_services,苹果服务

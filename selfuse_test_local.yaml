@@ -77,17 +77,17 @@ FilterLanding: &FilterLanding '^(?=.*((?i)落地|家宽|自建)).*$'
 FilterAll: &FilterAll '^(?=.*(.))(?!.*((?i)群|邀请|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|备用|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|无法|说明|使用|提示|特别|访问|支持|教程|关注|更新|作者|加入|(\b(USE|USED|TOTAL|EXPIRE|EMAIL|Panel|Channel|Author)\b|(\d{4}-\d{2}-\d{2}|\d+G)))).*$'
 FilterTunnel: &FilterTunnel '^(?=.*(香港|HK|Hong|🇭🇰|日本|JP|Japan|🇯🇵|新加坡|狮城|SG|Singapore|🇸🇬|韩国|KR|Korea|🇰🇷|美国|US|United States|America|🇺🇸))^(?!.*(网站|地址|剩余|过期|时间|有效|网址|禁止|邮箱|发布|客服|订阅|节点|落地|家宽|自建|×)).*$'
 
-Select: &Select {type: select, url: 'https://www.apple.com/library/test/success.html', disable-udp: false, hidden: false, include-all: true}
-Auto: &Auto {type: url-test, url: 'https://www.apple.com/library/test/success.html', interval: 300, tolerance: 50, disable-udp: false, hidden: true, include-all: true}
-Loadbalance: &Loadbalance {type: load-balance, url: 'https://www.apple.com/library/test/success.html', interval: 300, strategy: round-robin, disable-udp: false, hidden: true, include-all: true}
+Select: &Select {type: select, url: 'https://cp.cloudflare.com/generate_204', disable-udp: false, hidden: false, include-all: true}
+Auto: &Auto {type: url-test, url: 'https://cp.cloudflare.com/generate_204', interval: 300, tolerance: 50, disable-udp: false, hidden: true, include-all: true}
+Loadbalance: &Loadbalance {type: load-balance, url: 'https://cp.cloudflare.com/generate_204', interval: 300, strategy: round-robin, disable-udp: false, hidden: true, include-all: true}
 # 策略组
 proxy-groups: 
   # 主选择组
-  - {name: 节点选择, type: select, proxies: [自动选择, 手动选择, 省流选择, 高级选择,中继选择, 落地选择, 节点轮询, DIRECT], url: https://www.apple.com/library/test/success.html, icon: https://testingcf.jsdelivr.net/gh/Orz-3/mini@master/Color/Global.png}
+  - {name: 节点选择, type: select, proxies: [自动选择, 手动选择, 省流选择, 高级选择,中继选择, 落地选择, 节点轮询, DIRECT], url: https://cp.cloudflare.com/generate_204, icon: https://testingcf.jsdelivr.net/gh/Orz-3/mini@master/Color/Global.png}
 
   # 手动/自动
   - {name: 手动选择, <<: *Select, filter: *FilterAll, icon: https://testingcf.jsdelivr.net/gh/Orz-3/mini@master/Color/Static.png}
-  - {name: 自动选择, type: select, proxies: [香港节点, 日本节点, 韩国节点, 狮城节点, 美国节点, 英国节点, 法国节点, 德国节点, 台湾节点], url: https://www.apple.com/library/test/success.html, icon: https://testingcf.jsdelivr.net/gh/Orz-3/mini@master/Color/Urltest.png}
+  - {name: 自动选择, type: select, proxies: [香港节点, 日本节点, 韩国节点, 狮城节点, 美国节点, 英国节点, 法国节点, 德国节点, 台湾节点], url: https://cp.cloudflare.com/generate_204, icon: https://testingcf.jsdelivr.net/gh/Orz-3/mini@master/Color/Urltest.png}
 
   # 特殊分组
   - {name: 省流选择, <<: *Auto, filter: *FilterSave, icon: https://testingcf.jsdelivr.net/gh/Orz-3/mini@master/Color/Urltest.png}

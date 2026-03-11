@@ -233,22 +233,22 @@ rule-providers:
 
   google_non_ip:
     <<: *RuleSet_domain_mrs
-    url: https://cdn.jsdelivr.net/gh/QuixoticHeart/rule-set@refs/heads/ruleset/meta/domain/google.mrs
+    url: https://testingcf.jsdelivr.net/gh/QuixoticHeart/rule-set@refs/heads/ruleset/meta/domain/google.mrs
     path: ./rule_set/other_ruleset/google.mrs
   
   googlefcm_non_ip:
     <<: *RuleSet_domain_mrs
-    url: https://cdn.jsdelivr.net/gh/QuixoticHeart/rule-set@refs/heads/ruleset/meta/domain/googlefcm.mrs
+    url: https://testingcf.jsdelivr.net/gh/QuixoticHeart/rule-set@refs/heads/ruleset/meta/domain/googlefcm.mrs
     path: ./rule_set/other_ruleset/googlefcm.mrs
 
   google_ip:
     <<: *RuleSet_ipcidr_mrs
-    url: https://cdn.jsdelivr.net/gh/QuixoticHeart/rule-set@refs/heads/ruleset/meta/ipcidr/google.mrs
+    url: https://testingcf.jsdelivr.net/gh/QuixoticHeart/rule-set@refs/heads/ruleset/meta/ipcidr/google.mrs
     path: ./rule_set/other_ruleset/google_ip.mrs
 
   googlefcm_ip:
     <<: *RuleSet_ipcidr_mrs
-    url: https://cdn.jsdelivr.net/gh/QuixoticHeart/rule-set@refs/heads/ruleset/meta/ipcidr/googlefcm.mrs
+    url: https://testingcf.jsdelivr.net/gh/QuixoticHeart/rule-set@refs/heads/ruleset/meta/ipcidr/googlefcm.mrs
     path: ./rule_set/other_ruleset/googlefcm_ip.mrs
 
   # 软件更新、操作系统等大文件下载

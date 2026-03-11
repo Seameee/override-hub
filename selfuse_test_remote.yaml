@@ -16,6 +16,7 @@ profile:
   store-fake-ip: true
 unified-delay: true
 tcp-concurrent: true
+global-client-fingerprint: firefox
 
 ### DNS配置
 dns:
@@ -37,6 +38,7 @@ dns:
 ### 域名嗅探
 sniffer:
     enable: true
+    parse-pure-ip: true
     sniff:
         HTTP:
             ports: [80, 8080-8880]
@@ -65,7 +67,7 @@ tun:
   # 如果有使用zerotier或者headscale等，需要自己配置排除自己的网段
   # route-exclude-address: ["192.168.110.0/24"]
 
-# 节点筛选
+### 节点筛选
 
 # 按地区筛选
 FilterHK: &FilterHK '^(?=.*(香港|HK|Hong|🇭🇰))^(?!.*(网站|地址|剩余|过期|时间|有效|网址|禁止|邮箱|发布|客服|订阅|节点|落地|家宽|自建|×)).*$'
@@ -87,7 +89,8 @@ FilterTunnel: &FilterTunnel '^(?=.*(香港|HK|Hong|🇭🇰|日本|JP|Japan|🇯
 Select: &Select {type: select, url: 'https://cp.cloudflare.com/generate_204', disable-udp: false, hidden: false, include-all: true}
 Auto: &Auto {type: url-test, url: 'https://cp.cloudflare.com/generate_204', interval: 300, tolerance: 50, disable-udp: false, hidden: true, include-all: true}
 Loadbalance: &Loadbalance {type: load-balance, url: 'https://cp.cloudflare.com/generate_204', interval: 300, strategy: round-robin, disable-udp: false, hidden: true, include-all: true}
-# 策略组
+
+### 策略组
 proxy-groups: 
   # 主选择组
   - {name: 节点选择, type: select, proxies: [自动选择, 手动选择, 省流选择, 高级选择,中继选择, 落地选择, 节点轮询, DIRECT], url: https://cp.cloudflare.com/generate_204, icon: https://testingcf.jsdelivr.net/gh/Orz-3/mini@master/Color/Global.png}
@@ -109,6 +112,7 @@ proxy-groups:
   - {name: 下载服务, type: select, proxies: [节点选择, 自动选择, 手动选择, 省流选择, 高级选择, 中继选择, 落地选择, 节点轮询, 香港节点, 日本节点, 韩国节点, 狮城节点, 美国节点, 英国节点, 法国节点, 德国节点, 台湾节点], icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png}
   - {name: 苹果服务, type: select, proxies: [DIRECT, 节点选择, 自动选择, 手动选择, 省流选择, 高级选择, 中继选择, 落地选择, 节点轮询, 香港节点, 日本节点, 韩国节点, 狮城节点, 美国节点, 英国节点, 法国节点, 德国节点, 台湾节点], icon: https://testingcf.jsdelivr.net/gh/Orz-3/mini@master/Color/Apple.png}
   - {name: 微软服务, type: select, proxies: [DIRECT, 节点选择, 自动选择, 手动选择, 省流选择, 高级选择, 中继选择, 落地选择, 节点轮询, 香港节点, 日本节点, 韩国节点, 狮城节点, 美国节点, 英国节点, 法国节点, 德国节点, 台湾节点], icon: https://testingcf.jsdelivr.net/gh/Orz-3/mini@master/Color/Microsoft.png}
+  - {name: 谷歌服务, type: select, proxies: [节点选择, 自动选择, 手动选择, 省流选择, 高级选择, 中继选择, 落地选择, 节点轮询, 香港节点, 日本节点, 韩国节点, 狮城节点, 美国节点, 英国节点, 法国节点, 德国节点, 台湾节点], icon: https://testingcf.jsdelivr.net/gh/Orz-3/mini@master/Color/Google.png}
   - {name: 国外媒体, type: select, proxies: [节点选择, 自动选择, 手动选择, 省流选择, 高级选择, 中继选择, 落地选择, 节点轮询, 香港节点, 日本节点, 韩国节点, 狮城节点, 美国节点, 英国节点, 法国节点, 德国节点, 台湾节点], icon: https://testingcf.jsdelivr.net/gh/Orz-3/mini@master/Color/Streaming.png}
 
   # 自动选择 - 按地区
@@ -126,27 +130,28 @@ proxy-groups:
 RuleSet_classical: &RuleSet_classical {type: http, behavior: classical, interval: 43200, format: text, proxy: 节点选择}
 RuleSet_domain: &RuleSet_domain {type: http, behavior: domain, interval: 43200, format: text, proxy: 节点选择}
 RuleSet_ipcidr: &RuleSet_ipcidr {type: http, behavior: ipcidr, interval: 43200, format: text, proxy: 节点选择}
-RuleSet_filter: &RuleSet_filter {type: http, behavior: domain, interval: 43200, format: mrs, proxy: 节点选择}
+RuleSet_domain_mrs: &RuleSet_domain_mrs {type: http, behavior: domain, interval: 43200, format: mrs, proxy: 节点选择}
+RuleSet_ipcidr_mrs: &RuleSet_ipcidr_mrs {type: http, behavior: ipcidr, interval: 43200, format: mrs, proxy: 节点选择}
 
-# 订阅规则
+### 订阅规则
 rule-providers:
   fakeip-filter:
-    <<: *RuleSet_filter
+    <<: *RuleSet_domain_mrs
     url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/fakeip-filter.mrs
     path: ./rule_set/other_ruleset/fakeip-filter.mrs
 
   cn:
-    <<: *RuleSet_filter
+    <<: *RuleSet_domain_mrs
     url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/cn.mrs
     path: ./rule_set/other_ruleset/cn.mrs
 
   private:
-    <<: *RuleSet_filter
+    <<: *RuleSet_domain_mrs
     url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/private.mrs
     path: ./rule_set/other_ruleset/private.mrs
 
   trackerslist:
-    <<: *RuleSet_filter
+    <<: *RuleSet_domain_mrs
     url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/trackerslist.mrs
     path: ./rule_set/other_ruleset/trackerslist.mrs
 
@@ -225,7 +230,27 @@ rule-providers:
     <<: *RuleSet_classical
     url: https://ruleset.skk.moe/Clash/non_ip/microsoft.txt
     path: ./rule_set/sukkaw_ruleset/microsoft_non_ip.txt
+
+  google_non_ip:
+    <<: *RuleSet_domain_mrs
+    url: https://cdn.jsdelivr.net/gh/QuixoticHeart/rule-set@refs/heads/ruleset/meta/domain/google.mrs
+    path: ./rule_set/other_ruleset/google.mrs
   
+  googlefcm_non_ip:
+    <<: *RuleSet_domain_mrs
+    url: https://cdn.jsdelivr.net/gh/QuixoticHeart/rule-set@refs/heads/ruleset/meta/domain/googlefcm.mrs
+    path: ./rule_set/other_ruleset/googlefcm.mrs
+
+  google_ip:
+    <<: *RuleSet_ipcidr_mrs
+    url: https://cdn.jsdelivr.net/gh/QuixoticHeart/rule-set@refs/heads/ruleset/meta/ipcidr/google.mrs
+    path: ./rule_set/other_ruleset/google_ip.mrs
+
+  googlefcm_ip:
+    <<: *RuleSet_ipcidr_mrs
+    url: https://cdn.jsdelivr.net/gh/QuixoticHeart/rule-set@refs/heads/ruleset/meta/ipcidr/googlefcm.mrs
+    path: ./rule_set/other_ruleset/googlefcm_ip.mrs
+
   # 软件更新、操作系统等大文件下载
   download_domainset:
     <<: *RuleSet_domain
@@ -273,9 +298,9 @@ rule-providers:
     url: https://testingcf.jsdelivr.net/gh/Seameee/override-hub@refs/heads/main/mergecnip/china_ip.txt
     path: ./rule_set/other_ruleset/china_ip.txt
 
-# 分流规则
+### 分流规则
 rules:
-  ### 非 IP 类规则
+  # 非 IP 类规则
   - RULE-SET,reject_non_ip,REJECT
   - RULE-SET,reject_domainset,REJECT
   - RULE-SET,reject_non_ip_drop,REJECT-DROP
@@ -289,6 +314,8 @@ rules:
   - RULE-SET,microsoft_cdn_non_ip,DIRECT
   - RULE-SET,apple_cn_non_ip,DIRECT
   - RULE-SET,apple_services,苹果服务
+  - RULE-SET,google_non_ip,谷歌服务
+  - RULE-SET,googlefcm_non_ip,谷歌服务
   - RULE-SET,microsoft_non_ip,微软服务
   - RULE-SET,global_non_ip,节点选择
   - RULE-SET,domestic_non_ip,DIRECT
@@ -296,10 +323,12 @@ rules:
   - RULE-SET,direct_non_ip,DIRECT
   - RULE-SET,lan_non_ip,DIRECT
 
-  ### IP 类规则
+  # IP 类规则
   - RULE-SET,reject_ip,REJECT
   - RULE-SET,telegram_ip,电报信息,no-resolve
   - RULE-SET,stream_ip,国外媒体
+  - RULE-SET,google_ip,谷歌服务,no-resolve
+  - RULE-SET,googlefcm_ip,谷歌服务,no-resolve
   - RULE-SET,lan_ip,DIRECT,no-resolve
   - RULE-SET,domestic_ip,DIRECT
   - RULE-SET,china_ip,DIRECT

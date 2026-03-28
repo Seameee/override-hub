@@ -1,1 +1,38 @@
-{"name":"mihomo","displayName":"","remark":"","icon":"https://raw.githubusercontent.com/cc63/ICON/main/icons/Clash.png","source":"local","sourceType":"collection","sourceName":"substore_merge_config_template","process":[{"type":"Script Operator","args":{"content":"https://raw.githubusercontent.com/Seameee/override-hub/refs/heads/main/selfuse_test_remote.yaml","mode":"link","arguments":{}},"id":"57058481.78778347","disabled":false},{"type":"Script Operator","args":{"content":"// 如果使用组合订阅模板中，自动选择中继节点的链式代理脚本，可以启用这个脚本隐藏中继选择策略组\nfunction main(config) {\n  config[\"proxy-groups\"].forEach((group) => {\n    if (group.name === \"中继选择\") {\n      group.hidden = true;\n    }\n  });\n  return config;\n}","mode":"script","arguments":{}},"customName":"","id":"24772717.359092887","disabled":true}],"type":"mihomoProfile","content":"// 填入文件内容\n","download":true,"display-name":"","ignoreFailedRemoteFile":false,"subInfoUrl":""}
+{
+    "name": "mihomo",
+    "displayName": "",
+    "remark": "",
+    "icon": "https://raw.githubusercontent.com/cc63/ICON/main/icons/Clash.png",
+    "source": "local",
+    "sourceType": "collection",
+    "sourceName": "substore_merge_config_template",
+    "process": [
+        {
+            "type": "Script Operator",
+            "args": {
+                "content": "https://raw.githubusercontent.com/Seameee/override-hub/refs/heads/main/selfuse_test_remote.yaml",
+                "mode": "link",
+                "arguments": {}
+            },
+            "id": "57058481.78778347",
+            "disabled": false
+        },
+        {
+            "type": "Script Operator",
+            "args": {
+                "content": "// 如果使用组合订阅模板中，自动选择中继节点的链式代理脚本，可以启用这个脚本隐藏中继选择策略组\nfunction main(config) {\n  config[\"proxy-groups\"].forEach((group) => {\n    if (group.name === \"中继选择\") {\n      group.hidden = true;\n    }\n  });\n  return config;\n}",
+                "mode": "script",
+                "arguments": {}
+            },
+            "customName": "",
+            "id": "24772717.359092887",
+            "disabled": true
+        }
+    ],
+    "type": "mihomoProfile",
+    "content": "// 填入文件内容\n",
+    "download": true,
+    "display-name": "",
+    "ignoreFailedRemoteFile": false,
+    "subInfoUrl": ""
+}

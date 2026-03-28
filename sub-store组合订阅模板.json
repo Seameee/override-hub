@@ -1,1 +1,177 @@
-{"name":"substore_merge_config_template","displayName":"sub-store组合订阅模板","form":"","remark":"","mergeSources":"","ignoreFailedRemoteSub":"quiet","passThroughUA":false,"icon":"","process":[{"type":"Quick Setting Operator","args":{"useless":"DISABLED","udp":"DEFAULT","scert":"ENABLED","tfo":"DEFAULT","vmess aead":"DEFAULT"}},{"type":"Script Operator","args":{"content":"https://raw.githubusercontent.com/xream/scripts/refs/heads/main/surge/modules/sub-store-scripts/sub-info/sum.js","mode":"link","arguments":{}},"customName":"","id":"28460290.72169969","disabled":false},{"type":"Regex Filter","args":{"keep":false,"regex":["群|邀请|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|备用|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|无法|说明|使用|提示|特别|访问|支持|付费|失联|设置|总计|(\\b(USE|USED|TOTAL|EXPIRE|EMAIL|Panel)\\b|(\\d{4}-\\d{2}-\\d{2}|\\dG))"]},"id":"10354460.04108187","disabled":false},{"type":"Handle Duplicate Operator","args":{"action":"rename","position":"back","template":"0 1 2 3 4 5 6 7 8 9","link":" "},"id":"20454324.864660557","disabled":false},{"type":"Flag Operator","args":{"mode":"add","tw":"cn"},"id":"72382003.7008269","disabled":false},{"type":"Sort Operator","args":"asc","id":"25116284.22819716","disabled":false},{"type":"Script Operator","args":{"content":"// 风险节点过滤脚本，来自https://linux.do/t/topic/496229\nasync function operator (proxies, targetPlatform, context) {\n    const $ = $substore;\n    const cacheEnabled = $arguments.cache;\n    const cache = scriptResourceCache;\n\n    // 配置参数\n    const CONFIG = {\n        TIMEOUT: parseInt ($arguments.timeout) || 10000,\n        RETRIES: parseInt ($arguments.retries) || 3,\n        RETRY_DELAY: parseInt ($arguments.retry_delay) || 2000,\n        CONCURRENCY: parseInt ($arguments.concurrency) || 10\n    };\n\n    const ipListAPIs = [\n        'https://raw.githubusercontent.com/X4BNet/lists_vpn/main/output/datacenter/ipv4.txt',\n        'https://raw.githubusercontent.com/X4BNet/lists_vpn/main/output/vpn/ipv4.txt',\n        'https://check.torproject.org/exit-addresses',\n        'https://www.dan.me.uk/torlist/',\n        'https://raw.githubusercontent.com/jhassine/server-ip-addresses/refs/heads/master/data/datacenters.txt'\n    ];\n\n    let riskyIPs = new Set ();\n    const cacheKey = 'risky_ips_cache';\n    const cacheExpiry = 6 * 60 * 60 * 1000; // 缩短缓存时间到 6 小时\n\n    // 尝试使用缓存\n    if (cacheEnabled) {\n        const cachedData = cache.get (cacheKey);\n        if (cachedData?.timestamp && (Date.now () - cachedData.timestamp < cacheExpiry)) {\n            riskyIPs = new Set (cachedData.ips);\n            $.info (' 使用缓存数据 ');\n            return await processProxies ();\n        }\n    }\n\n    let initialLoadSuccess = false; // 标记首次加载是否成功\n\n    // 获取风险 IP 列表\n    async function fetchIPList (api) {\n        const options = {\n            url: api,\n            timeout: CONFIG.TIMEOUT,\n            headers: {\n                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'\n            }\n        };\n\n        let retries = 0;\n        while (retries < CONFIG.RETRIES) {\n            try {\n                const response = await $.http.get (options);\n                if (response.body) {\n                    // 特殊处理 TOR 列表\n                    if (api.includes ('torproject.org/exit-addresses')) {\n                        return response.body.split ('\\n')\n                            .filter (line => line.startsWith ('ExitAddress'))\n                            .map (line => line.split (' ')[1])\n                            .filter (Boolean);\n                    } else if (api.includes ('dan.me.uk/torlist/')) {\n                        return response.body.split ('\\n')\n                            .map (line => line.trim ())\n                            .filter (line => line && /^\\d {1,3}\\.\\d {1,3}\\.\\d {1,3}\\.\\d {1,3}$/.test (line));\n                    }\n                    return response.body\n                        .split ('\\n')\n                        .map (line => line.trim ())\n                        .filter (line => line && !line.startsWith ('#'));\n                }\n                return;\n            } catch (error) {\n                retries++;\n                $.error (`获取 IP 列表失败 (尝试 ${retries}/${CONFIG.RETRIES}): ${api}, ${error}`);\n                if (retries === CONFIG.RETRIES) {\n                    return;\n                }\n                await $.wait (CONFIG.RETRY_DELAY * retries);\n            }\n        }\n        return;\n    }\n\n    // 更新风险 IP 列表\n    try {\n        const results = await Promise.all (ipListAPIs.map (api => fetchIPList (api)));\n        const fetchedIPs = results.flat ();\n        if (fetchedIPs.length > 0) {\n            riskyIPs = new Set (fetchedIPs);\n            $.info (`成功更新风险 IP 列表: ${riskyIPs.size} 条记录`);\n            initialLoadSuccess = true;\n            if (cacheEnabled) {\n                cache.set (cacheKey, {\n                    timestamp: Date.now (),\n                    ips: Array.from (riskyIPs)\n                });\n            }\n        } else {\n            $.warn (' 未获取到任何 IP 数据 ');\n            // 不抛出错误，允许使用缓存作为后备\n        }\n    } catch (error) {\n        $.error (`更新风险 IP 列表失败: ${error}`);\n    } finally {\n        // 如果首次加载失败且没有缓存，则给出警告\n        if (!initialLoadSuccess && cacheEnabled && !cache.get (cacheKey)?.ips) {\n            $.warn (' 首次加载 IP 列表失败且没有可用缓存，可能无法进行风险 IP 检测。');\n        } else if (!initialLoadSuccess && !cacheEnabled) {\n            $.warn (' 首次加载 IP 列表失败且未启用缓存，可能无法进行风险 IP 检测。');\n        }\n    }\n\n    return await processProxies ();\n\n    // 处理代理列表并筛除风险 IP\n    async function processProxies () {\n        const nonRiskyProxies = [];\n        for (const proxy of proxies) {\n            try {\n                const node = ProxyUtils.produce ([{ ...proxy }], 'ClashMeta', 'internal')?.[0];\n                if (node) {\n                    const serverAddress = node.server;\n                    if (isIPAddress (serverAddress) && isRiskyIP (serverAddress)) {\n                        $.info (`发现风险 IP 节点，已排除: ${proxy.name} (${serverAddress})`);\n                        // 不添加到 nonRiskyProxies 列表中，即被筛除\n                    } else {\n                        nonRiskyProxies.push (proxy);\n                    }\n                } else {\n                    nonRiskyProxies.push (proxy); // 如果 ProxyUtils 处理失败，保留该节点\n                    $.warn (`处理节点失败，已保留: ${proxy.name}`);\n                }\n            } catch (e) {\n                $.error (`处理节点失败，已保留: ${proxy.name}, 错误: ${e}`);\n                nonRiskyProxies.push (proxy); // 发生异常也保留\n            }\n        }\n        $.info (`处理完成，剩余 ${nonRiskyProxies.length} 个非风险 IP 节点`);\n        return nonRiskyProxies;\n    }\n\n    function isIPAddress (ip) {\n        return /^(\\d {1,3}\\.){3}\\d {1,3}$/.test (ip);\n    }\n\n    function isRiskyIP (ip) {\n        if (riskyIPs.has (ip)) return true;\n        for (const riskyCIDR of riskyIPs) {\n            if (riskyCIDR.includes ('/') && isIPInCIDR (ip, riskyCIDR)) return true;\n        }\n        return false;\n    }\n\n    function isIPInCIDR (ip, cidr) {\n        const [range, bits = 32] = cidr.split ('/');\n        const mask = ~((1 << (32 - bits)) - 1);\n        const ipNum = ip.split ('.').reduce ((sum, part) => (sum << 8) + parseInt (part, 10), 0);\n        const rangeNum = range.split ('.').reduce ((sum, part) => (sum << 8) + parseInt (part, 10), 0);\n        return (ipNum & mask) === (rangeNum & mask);\n    }\n}","mode":"script","arguments":{}},"id":"49449781.9219881","disabled":true},{"type":"Resolve Domain Operator","args":{"provider":"Ali","type":"IPv6","filter":"disabled","cache":"enabled","url":"","edns":""},"customName":"","id":"69491248.72493628","disabled":true},{"type":"Script Operator","args":{"content":"// IPv6节点入口解析命名脚本，如需对域名的AAAA记录解析可以启用上面的操作\nif ( (ProxyUtils.isIPv6($server.server) || $server.name.match(/ipv6|v6/i)) && !$server.name.includes('[IPv6]') ) {\n  $server.name = `${$server.name} [IPv6]`;\n}\n\nif ($server._domain) $server.server = $server._domain","mode":"script","arguments":{}},"customName":"","id":"56832536.65291016","disabled":false},{"type":"Script Operator","args":{"content":"https://raw.githubusercontent.com/Keywos/rule/main/rename.js#bl=true&blkey=%E5%AE%B6%E5%AE%BD%2BIPLC%2BIEPL%2B%E8%90%BD%E5%9C%B0%2BIPv6&flag=true&in=true&nm=true&out=en%2Bcn","mode":"link","arguments":{"bl":"true","blkey":"家宽+IPLC+IEPL+落地+IPv6","flag":"true","in":"true","nm":"true","out":"en+cn"}},"id":"25705468.712085843","disabled":false},{"type":"Script Operator","args":{"content":"// 链式代理自动设置脚本，自动选择对应地区节点进行中继，需要节点名中含有“家宽”或“落地”才会生效，按需启用\n// 如果想要设置链式代理的订阅没有包含以上字样，可以在单条订阅中添加一个正则命名操作，左侧设置为“$”，右侧设置为“ 落地”\n// ⚠️注意与下面的链式代理设置脚本只能启用其中一个\nconst substringCountries = ['香港', '台湾', '日本', '美国', '韩国', '英国', '法国', '德国'];\n\n// 定义允许的协议类型列表\nconst allowedProtocols = ['ss', 'socks5', 'http'];\n\n// 调整外层判断条件：\n// 1. 节点名称包含 '家宽' 或 '落地' (原条件)\n// 2. 节点的代理协议类型在 allowedProtocols 列表中\nif (($server.name.includes('家宽') || $server.name.includes('落地')) && allowedProtocols.includes($server.type)) {\n  // 原有的重命名逻辑被包裹在这里面\n  // 这个块只有在名字包含 '家宽' 或 '落地' 且协议是 shadowsocks, socks5, 或 http 时才会执行\n\n  if ($server.name.includes('新加坡')) {\n    // 如果包含“新加坡”，并且满足外层两个条件\n    $server['underlying-proxy'] = '狮城节点';\n  }\n  else if (substringCountries.some(country => $server.name.includes(country))) {\n    // 如果包含其他指定国家之一，并且满足外层两个条件\n    // 这里的 substring(5, 7) 依然保留原样，如果你的节点格式变了，记得调整。\n    const prefix = $server.name.substring(5, 7);\n    const underlyingProxyName = prefix + '节点';\n    $server['underlying-proxy'] = underlyingProxyName;\n  }\n  else {\n    // 如果不包含“新加坡”或任何指定国家，但满足外层两个条件\n    // 依然设为“香港节点”。\n    $server['underlying-proxy'] = '香港节点';\n  }\n}\n// 如果节点名称不包含 '家宽' 或 '落地'，或者协议不是 shadowsocks, socks5, 或 http，\n// 则跳过上面的整个 if 块，$server['underlying-proxy'] 将不会被修改。\n\n","mode":"script","arguments":{}},"customName":"","id":"13667343.20577676","disabled":true},{"type":"Script Operator","args":{"content":"// 链式代理自动设置脚本，需手动选择中继节点，需要节点名中含有\"家宽\"或\"落地\"才会生效，按需启用\n// 如果想要设置链式代理的订阅没有包含以上字样，可以在单条订阅中添加一个正则命名操作，左侧设置为\"$\"，右侧设置为\" 落地\"\n// ⚠️注意与上面的链式代理设置脚本只能启用其中一个\nconst substringCountries = ['香港', '台湾', '日本', '美国', '韩国', '英国', '法国', '德国'];\n\n// 定义允许的协议类型列表\nconst allowedProtocols = ['ss', 'socks5', 'http'];\n\n// 调整外层判断条件：\n// 1. 节点名称包含 '家宽' 或 '落地' (原条件)\n// 2. 节点的代理协议类型在 allowedProtocols 列表中\nif (($server.name.includes('家宽') || $server.name.includes('落地')) && allowedProtocols.includes($server.type)) {\n  // 原有的重命名逻辑被包裹在这里面\n  // 这个块只有在名字包含 '家宽' 或 '落地' 且协议是 shadowsocks, socks5, 或 http 时才会执行\n\n  // 将所有满足条件的节点 underlying-proxy 设置为\"中继节点\"\n  $server['underlying-proxy'] = '中继选择';\n}\n// 如果节点名称不包含 '家宽' 或 '落地'，或者协议不是 shadowsocks, socks5, 或 http，\n// 则跳过上面的整个 if 块，$server['underlying-proxy'] 将不会被修改。\n","mode":"script","arguments":{}},"customName":"","id":"75280958.54806618","disabled":true}],"subscriptions":[],"tag":[],"subscriptionTags":[],"display-name":"sub-store组合订阅模板","subUserinfo":""}
+{
+    "name": "substore_merge_config_template",
+    "displayName": "sub-store组合订阅模板",
+    "form": "",
+    "remark": "",
+    "mergeSources": "",
+    "ignoreFailedRemoteSub": "quiet",
+    "passThroughUA": false,
+    "icon": "",
+    "process": [
+        {
+            "type": "Quick Setting Operator",
+            "args": {
+                "useless": "DISABLED",
+                "udp": "DEFAULT",
+                "scert": "ENABLED",
+                "tfo": "DEFAULT",
+                "vmess aead": "DEFAULT"
+            }
+        },
+        {
+            "type": "Script Operator",
+            "args": {
+                "content": "https://raw.githubusercontent.com/xream/scripts/refs/heads/main/surge/modules/sub-store-scripts/sub-info/sum.js",
+                "mode": "link",
+                "arguments": {}
+            },
+            "customName": "",
+            "id": "28460290.72169969",
+            "disabled": false
+        },
+        {
+            "type": "Regex Filter",
+            "args": {
+                "keep": false,
+                "regex": [
+                    "群|邀请|返利|循环|官网|客服|网站|网址|获取|订阅|流量|恢复|到期|机场|下次|版本|官址|备用|过期|已用|联系|邮箱|邮件|观察|工单|部分|贩卖|通知|倒卖|防止|国内|地址|频道|无法|说明|使用|提示|特别|访问|支持|付费|失联|设置|总计|客户端|(\\b(USE|TOTAL|EXPIRE|EMAIL|Panel)\\b|(\\d{4}-\\d{2}-\\d{2}))"
+                ]
+            },
+            "id": "10354460.04108187",
+            "disabled": false
+        },
+        {
+            "type": "Handle Duplicate Operator",
+            "args": {
+                "action": "rename",
+                "position": "back",
+                "template": "0 1 2 3 4 5 6 7 8 9",
+                "link": " ",
+                "field": [
+                    "name"
+                ]
+            },
+            "id": "20454324.864660557",
+            "disabled": false
+        },
+        {
+            "type": "Flag Operator",
+            "args": {
+                "mode": "add",
+                "tw": "cn"
+            },
+            "id": "72382003.7008269",
+            "disabled": false
+        },
+        {
+            "type": "Script Operator",
+            "args": {
+                "content": "// 风险节点过滤脚本，来自https://linux.do/t/topic/496229\nasync function operator (proxies, targetPlatform, context) {\n    const $ = $substore;\n    const cacheEnabled = $arguments.cache;\n    const cache = scriptResourceCache;\n\n    // 配置参数\n    const CONFIG = {\n        TIMEOUT: parseInt ($arguments.timeout) || 10000,\n        RETRIES: parseInt ($arguments.retries) || 3,\n        RETRY_DELAY: parseInt ($arguments.retry_delay) || 2000,\n        CONCURRENCY: parseInt ($arguments.concurrency) || 10\n    };\n\n    const ipListAPIs = [\n        'https://raw.githubusercontent.com/X4BNet/lists_vpn/main/output/datacenter/ipv4.txt',\n        'https://raw.githubusercontent.com/X4BNet/lists_vpn/main/output/vpn/ipv4.txt',\n        'https://check.torproject.org/exit-addresses',\n        'https://www.dan.me.uk/torlist/',\n        'https://raw.githubusercontent.com/jhassine/server-ip-addresses/refs/heads/master/data/datacenters.txt'\n    ];\n\n    let riskyIPs = new Set ();\n    const cacheKey = 'risky_ips_cache';\n    const cacheExpiry = 6 * 60 * 60 * 1000; // 缩短缓存时间到 6 小时\n\n    // 尝试使用缓存\n    if (cacheEnabled) {\n        const cachedData = cache.get (cacheKey);\n        if (cachedData?.timestamp && (Date.now () - cachedData.timestamp < cacheExpiry)) {\n            riskyIPs = new Set (cachedData.ips);\n            $.info (' 使用缓存数据 ');\n            return await processProxies ();\n        }\n    }\n\n    let initialLoadSuccess = false; // 标记首次加载是否成功\n\n    // 获取风险 IP 列表\n    async function fetchIPList (api) {\n        const options = {\n            url: api,\n            timeout: CONFIG.TIMEOUT,\n            headers: {\n                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'\n            }\n        };\n\n        let retries = 0;\n        while (retries < CONFIG.RETRIES) {\n            try {\n                const response = await $.http.get (options);\n                if (response.body) {\n                    // 特殊处理 TOR 列表\n                    if (api.includes ('torproject.org/exit-addresses')) {\n                        return response.body.split ('\\n')\n                            .filter (line => line.startsWith ('ExitAddress'))\n                            .map (line => line.split (' ')[1])\n                            .filter (Boolean);\n                    } else if (api.includes ('dan.me.uk/torlist/')) {\n                        return response.body.split ('\\n')\n                            .map (line => line.trim ())\n                            .filter (line => line && /^\\d {1,3}\\.\\d {1,3}\\.\\d {1,3}\\.\\d {1,3}$/.test (line));\n                    }\n                    return response.body\n                        .split ('\\n')\n                        .map (line => line.trim ())\n                        .filter (line => line && !line.startsWith ('#'));\n                }\n                return;\n            } catch (error) {\n                retries++;\n                $.error (`获取 IP 列表失败 (尝试 ${retries}/${CONFIG.RETRIES}): ${api}, ${error}`);\n                if (retries === CONFIG.RETRIES) {\n                    return;\n                }\n                await $.wait (CONFIG.RETRY_DELAY * retries);\n            }\n        }\n        return;\n    }\n\n    // 更新风险 IP 列表\n    try {\n        const results = await Promise.all (ipListAPIs.map (api => fetchIPList (api)));\n        const fetchedIPs = results.flat ();\n        if (fetchedIPs.length > 0) {\n            riskyIPs = new Set (fetchedIPs);\n            $.info (`成功更新风险 IP 列表: ${riskyIPs.size} 条记录`);\n            initialLoadSuccess = true;\n            if (cacheEnabled) {\n                cache.set (cacheKey, {\n                    timestamp: Date.now (),\n                    ips: Array.from (riskyIPs)\n                });\n            }\n        } else {\n            $.warn (' 未获取到任何 IP 数据 ');\n            // 不抛出错误，允许使用缓存作为后备\n        }\n    } catch (error) {\n        $.error (`更新风险 IP 列表失败: ${error}`);\n    } finally {\n        // 如果首次加载失败且没有缓存，则给出警告\n        if (!initialLoadSuccess && cacheEnabled && !cache.get (cacheKey)?.ips) {\n            $.warn (' 首次加载 IP 列表失败且没有可用缓存，可能无法进行风险 IP 检测。');\n        } else if (!initialLoadSuccess && !cacheEnabled) {\n            $.warn (' 首次加载 IP 列表失败且未启用缓存，可能无法进行风险 IP 检测。');\n        }\n    }\n\n    return await processProxies ();\n\n    // 处理代理列表并筛除风险 IP\n    async function processProxies () {\n        const nonRiskyProxies = [];\n        for (const proxy of proxies) {\n            try {\n                const node = ProxyUtils.produce ([{ ...proxy }], 'ClashMeta', 'internal')?.[0];\n                if (node) {\n                    const serverAddress = node.server;\n                    if (isIPAddress (serverAddress) && isRiskyIP (serverAddress)) {\n                        $.info (`发现风险 IP 节点，已排除: ${proxy.name} (${serverAddress})`);\n                        // 不添加到 nonRiskyProxies 列表中，即被筛除\n                    } else {\n                        nonRiskyProxies.push (proxy);\n                    }\n                } else {\n                    nonRiskyProxies.push (proxy); // 如果 ProxyUtils 处理失败，保留该节点\n                    $.warn (`处理节点失败，已保留: ${proxy.name}`);\n                }\n            } catch (e) {\n                $.error (`处理节点失败，已保留: ${proxy.name}, 错误: ${e}`);\n                nonRiskyProxies.push (proxy); // 发生异常也保留\n            }\n        }\n        $.info (`处理完成，剩余 ${nonRiskyProxies.length} 个非风险 IP 节点`);\n        return nonRiskyProxies;\n    }\n\n    function isIPAddress (ip) {\n        return /^(\\d {1,3}\\.){3}\\d {1,3}$/.test (ip);\n    }\n\n    function isRiskyIP (ip) {\n        if (riskyIPs.has (ip)) return true;\n        for (const riskyCIDR of riskyIPs) {\n            if (riskyCIDR.includes ('/') && isIPInCIDR (ip, riskyCIDR)) return true;\n        }\n        return false;\n    }\n\n    function isIPInCIDR (ip, cidr) {\n        const [range, bits = 32] = cidr.split ('/');\n        const mask = ~((1 << (32 - bits)) - 1);\n        const ipNum = ip.split ('.').reduce ((sum, part) => (sum << 8) + parseInt (part, 10), 0);\n        const rangeNum = range.split ('.').reduce ((sum, part) => (sum << 8) + parseInt (part, 10), 0);\n        return (ipNum & mask) === (rangeNum & mask);\n    }\n}",
+                "mode": "script",
+                "arguments": {}
+            },
+            "id": "49449781.9219881",
+            "disabled": true
+        },
+        {
+            "type": "Resolve Domain Operator",
+            "args": {
+                "provider": "Ali",
+                "type": "IPv6",
+                "filter": "disabled",
+                "cache": "enabled",
+                "url": "",
+                "edns": ""
+            },
+            "customName": "",
+            "id": "69491248.72493628",
+            "disabled": true
+        },
+        {
+            "type": "Script Operator",
+            "args": {
+                "content": "// IPv6节点入口解析命名脚本，如需对域名的AAAA记录解析可以启用上面的操作\nif ( (ProxyUtils.isIPv6($server.server) || $server.name.match(/ipv6|v6/i)) && !$server.name.includes('[IPv6]') ) {\n  $server.name = `${$server.name} [IPv6]`;\n}\n\nif ($server._domain) $server.server = $server._domain",
+                "mode": "script",
+                "arguments": {}
+            },
+            "customName": "",
+            "id": "56832536.65291016",
+            "disabled": false
+        },
+        {
+            "type": "Script Operator",
+            "args": {
+                "content": "https://raw.githubusercontent.com/Keywos/rule/main/rename.js#bl=true&blkey=%E5%AE%B6%E5%AE%BD%2BIPLC%2BIEPL%2B%E8%90%BD%E5%9C%B0%2BIPv6%2B%E4%BD%8E%E5%80%8D%E7%8E%87%2B%E7%9C%81%E6%B5%81%2BLanding%2BAdvance&blpx=true&flag=true&in=true&nm=true&out=en%2Bcn",
+                "mode": "link",
+                "arguments": {
+                    "bl": "true",
+                    "blkey": "家宽+IPLC+IEPL+落地+IPv6+低倍率+省流+Landing+Advance",
+                    "blpx": "true",
+                    "flag": "true",
+                    "in": "true",
+                    "nm": "true",
+                    "out": "en+cn"
+                }
+            },
+            "id": "25705468.712085843",
+            "disabled": false
+        },
+        {
+            "type": "Script Operator",
+            "args": {
+                "content": "// 链式代理自动设置脚本，自动选择对应地区节点进行中继，需要节点名中含有“家宽”或“落地”才会生效，按需启用\n// 如果想要设置链式代理的订阅没有包含以上字样，可以在单条订阅中添加一个正则命名操作，左侧设置为“$”，右侧设置为“ 落地”\n// ⚠️注意与下面的链式代理设置脚本只能启用其中一个\nconst substringCountries = ['香港', '台湾', '日本', '美国', '韩国', '英国', '法国', '德国'];\n\n// 定义允许的协议类型列表\nconst allowedProtocols = ['ss', 'socks5', 'http'];\n\n// 调整外层判断条件：\n// 1. 节点名称包含 '家宽' 或 '落地' (原条件)\n// 2. 节点的代理协议类型在 allowedProtocols 列表中\nif (($server.name.includes('家宽') || $server.name.includes('落地')) && allowedProtocols.includes($server.type)) {\n  // 原有的重命名逻辑被包裹在这里面\n  // 这个块只有在名字包含 '家宽' 或 '落地' 且协议是 shadowsocks, socks5, 或 http 时才会执行\n\n  if ($server.name.includes('新加坡')) {\n    // 如果包含“新加坡”，并且满足外层两个条件\n    $server['underlying-proxy'] = '狮城节点';\n  }\n  else if (substringCountries.some(country => $server.name.includes(country))) {\n    // 如果包含其他指定国家之一，并且满足外层两个条件\n    // 这里的 substring(5, 7) 依然保留原样，如果你的节点格式变了，记得调整。\n    const prefix = $server.name.substring(5, 7);\n    const underlyingProxyName = prefix + '节点';\n    $server['underlying-proxy'] = underlyingProxyName;\n  }\n  else {\n    // 如果不包含“新加坡”或任何指定国家，但满足外层两个条件\n    // 依然设为“香港节点”。\n    $server['underlying-proxy'] = '香港节点';\n  }\n}\n// 如果节点名称不包含 '家宽' 或 '落地'，或者协议不是 shadowsocks, socks5, 或 http，\n// 则跳过上面的整个 if 块，$server['underlying-proxy'] 将不会被修改。\n\n",
+                "mode": "script",
+                "arguments": {}
+            },
+            "customName": "",
+            "id": "13667343.20577676",
+            "disabled": true
+        },
+        {
+            "type": "Script Operator",
+            "args": {
+                "content": "// 链式代理自动设置脚本，需手动选择中继节点，需要节点名中含有\"家宽\"或\"落地\"才会生效，按需启用\n// 如果想要设置链式代理的订阅没有包含以上字样，可以在单条订阅中添加一个正则命名操作，左侧设置为\"$\"，右侧设置为\" 落地\"\n// ⚠️注意与上面的链式代理设置脚本只能启用其中一个\nconst substringCountries = ['香港', '台湾', '日本', '美国', '韩国', '英国', '法国', '德国'];\n\n// 定义允许的协议类型列表\nconst allowedProtocols = ['ss', 'socks5', 'http'];\n\n// 调整外层判断条件：\n// 1. 节点名称包含 '家宽' 或 '落地' (原条件)\n// 2. 节点的代理协议类型在 allowedProtocols 列表中\nif (($server.name.includes('家宽') || $server.name.includes('落地')) && allowedProtocols.includes($server.type)) {\n  // 原有的重命名逻辑被包裹在这里面\n  // 这个块只有在名字包含 '家宽' 或 '落地' 且协议是 shadowsocks, socks5, 或 http 时才会执行\n\n  // 将所有满足条件的节点 underlying-proxy 设置为\"中继节点\"\n  $server['underlying-proxy'] = '中继选择';\n}\n// 如果节点名称不包含 '家宽' 或 '落地'，或者协议不是 shadowsocks, socks5, 或 http，\n// 则跳过上面的整个 if 块，$server['underlying-proxy'] 将不会被修改。\n",
+                "mode": "script",
+                "arguments": {}
+            },
+            "customName": "",
+            "id": "75280958.54806618",
+            "disabled": true
+        },
+        {
+            "type": "Script Operator",
+            "args": {
+                "content": "// client-fingerprint指纹修改脚本，按需启用\nasync function operator(proxies = []) {\n  // 遍历所有代理节点\n  proxies.forEach(server => {\n    // 使用文档中提到的方法，直接修改 client-fingerprint 属性\n    server['client-fingerprint'] = 'firefox';\n    // 或者，如果某些配置中属性名称为 clientFingerprint，也可以同时设置\n    // server['clientFingerprint'] = 'firefox';\n  });\n  return proxies;\n}\n",
+                "mode": "script",
+                "arguments": {}
+            },
+            "customName": "",
+            "id": "65597801.89520841",
+            "disabled": true
+        },
+        {
+            "type": "Regex Filter",
+            "args": {
+                "keep": false,
+                "regex": [
+                    "🏴‍☠️"
+                ]
+            },
+            "customName": "",
+            "id": "37417876.56784134",
+            "disabled": false
+        },
+        {
+            "type": "Sort Operator",
+            "args": "asc",
+            "id": "25116284.22819716",
+            "disabled": false
+        }
+    ],
+    "subscriptions": [],
+    "tag": [],
+    "subscriptionTags": [],
+    "display-name": "sub-store组合订阅模板_1774659669387",
+    "subUserinfo": "",
+    "isIconColor": true
+}

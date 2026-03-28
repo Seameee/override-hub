@@ -1,1 +1,31 @@
-{"name":"sing-box","displayName":"","remark":"","icon":"","source":"remote","sourceType":"collection","sourceName":"","process":[{"type":"Script Operator","args":{"content":"https://raw.githubusercontent.com/xream/scripts/main/surge/modules/sub-store-scripts/sing-box/template.js#name=substore_merge_config_template&outbound=%F0%9F%95%B3Proxy%7CEmby%7CFinal%F0%9F%95%B3%E2%84%B9%EF%B8%8F%F0%9F%87%AD%F0%9F%87%B0%20HongKong%F0%9F%8F%B7%E2%84%B9%EF%B8%8F%E6%B8%AF%7Chk%7Chongkong%7Ckong%20kong%7C%F0%9F%87%AD%F0%9F%87%B0%F0%9F%95%B3%E2%84%B9%EF%B8%8F%F0%9F%87%A8%F0%9F%87%B3%20Taiwan%F0%9F%8F%B7%E2%84%B9%EF%B8%8F%E5%8F%B0%7Ctw%7Ctaiwan%7C%F0%9F%87%B9%F0%9F%87%BC%F0%9F%95%B3%E2%84%B9%EF%B8%8F%F0%9F%87%AF%F0%9F%87%B5%20Japan%F0%9F%8F%B7%E2%84%B9%EF%B8%8F%E6%97%A5%E6%9C%AC%7Cjp%7Cjapan%7C%F0%9F%87%AF%F0%9F%87%B5%F0%9F%95%B3%E2%84%B9%EF%B8%8F%F0%9F%87%B8%F0%9F%87%AC%20Singapore%F0%9F%8F%B7%E2%84%B9%EF%B8%8F%5E(%3F!.*(%3F%3Aus)).*(%E6%96%B0%7Csg%7Csingapore%7C%F0%9F%87%B8%F0%9F%87%AC)%F0%9F%95%B3%E2%84%B9%EF%B8%8F%F0%9F%87%BA%F0%9F%87%B8%20United%20States%F0%9F%8F%B7%E2%84%B9%EF%B8%8F%E7%BE%8E%7Cus%7Cunitedstates%7Cunited%20states%7C%F0%9F%87%BA%F0%9F%87%B8&type=%E7%BB%84%E5%90%88%E8%AE%A2%E9%98%85","mode":"link","arguments":{"name":"substore_merge_config_template","outbound":"🕳Proxy|Emby|Final🕳ℹ️🇭🇰 HongKong🏷ℹ️港|hk|hongkong|kong kong|🇭🇰🕳ℹ️🇨🇳 Taiwan🏷ℹ️台|tw|taiwan|🇹🇼🕳ℹ️🇯🇵 Japan🏷ℹ️日本|jp|japan|🇯🇵🕳ℹ️🇸🇬 Singapore🏷ℹ️^(?!.*(?:us)).*(新|sg|singapore|🇸🇬)🕳ℹ️🇺🇸 United States🏷ℹ️美|us|unitedstates|united states|🇺🇸","type":"组合订阅"}},"id":"98500673.43477342","disabled":false}],"type":"file","download":true,"url":"https://github.com/Repcz/Tool/raw/X/sing-box/sing-box.json","display-name":"","content":"","ignoreFailedRemoteFile":false}
+{
+    "name": "sing-box",
+    "displayName": "",
+    "remark": "",
+    "icon": "",
+    "source": "remote",
+    "sourceType": "collection",
+    "sourceName": "",
+    "process": [
+        {
+            "type": "Script Operator",
+            "args": {
+                "content": "https://raw.githubusercontent.com/xream/scripts/main/surge/modules/sub-store-scripts/sing-box/template.js#name=substore_merge_config_template&outbound=%F0%9F%95%B3Proxy%7CEmby%7CFinal%F0%9F%95%B3%E2%84%B9%EF%B8%8F%F0%9F%87%AD%F0%9F%87%B0%20HongKong%F0%9F%8F%B7%E2%84%B9%EF%B8%8F%E6%B8%AF%7Chk%7Chongkong%7Ckong%20kong%7C%F0%9F%87%AD%F0%9F%87%B0%F0%9F%95%B3%E2%84%B9%EF%B8%8F%F0%9F%87%A8%F0%9F%87%B3%20Taiwan%F0%9F%8F%B7%E2%84%B9%EF%B8%8F%E5%8F%B0%7Ctw%7Ctaiwan%7C%F0%9F%87%B9%F0%9F%87%BC%F0%9F%95%B3%E2%84%B9%EF%B8%8F%F0%9F%87%AF%F0%9F%87%B5%20Japan%F0%9F%8F%B7%E2%84%B9%EF%B8%8F%E6%97%A5%E6%9C%AC%7Cjp%7Cjapan%7C%F0%9F%87%AF%F0%9F%87%B5%F0%9F%95%B3%E2%84%B9%EF%B8%8F%F0%9F%87%B8%F0%9F%87%AC%20Singapore%F0%9F%8F%B7%E2%84%B9%EF%B8%8F%5E(%3F!.*(%3F%3Aus)).*(%E6%96%B0%7Csg%7Csingapore%7C%F0%9F%87%B8%F0%9F%87%AC)%F0%9F%95%B3%E2%84%B9%EF%B8%8F%F0%9F%87%BA%F0%9F%87%B8%20United%20States%F0%9F%8F%B7%E2%84%B9%EF%B8%8F%E7%BE%8E%7Cus%7Cunitedstates%7Cunited%20states%7C%F0%9F%87%BA%F0%9F%87%B8&type=%E7%BB%84%E5%90%88%E8%AE%A2%E9%98%85",
+                "mode": "link",
+                "arguments": {
+                    "name": "substore_merge_config_template",
+                    "outbound": "🕳Proxy|Emby|Final🕳ℹ️🇭🇰 HongKong🏷ℹ️港|hk|hongkong|kong kong|🇭🇰🕳ℹ️🇨🇳 Taiwan🏷ℹ️台|tw|taiwan|🇹🇼🕳ℹ️🇯🇵 Japan🏷ℹ️日本|jp|japan|🇯🇵🕳ℹ️🇸🇬 Singapore🏷ℹ️^(?!.*(?:us)).*(新|sg|singapore|🇸🇬)🕳ℹ️🇺🇸 United States🏷ℹ️美|us|unitedstates|united states|🇺🇸",
+                    "type": "组合订阅"
+                }
+            },
+            "id": "98500673.43477342",
+            "disabled": false
+        }
+    ],
+    "type": "file",
+    "download": true,
+    "url": "https://github.com/Repcz/Tool/raw/X/sing-box/sing-box.json",
+    "display-name": "",
+    "content": "",
+    "ignoreFailedRemoteFile": false
+}

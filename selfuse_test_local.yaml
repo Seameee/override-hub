@@ -184,10 +184,15 @@ rule-providers:
     url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/google-cn.mrs
     path: ./rule_set/google-cn.mrs
 
-  download:
+  download_domainset:
     <<: *RuleSet_domain_mrs
-    url: https://testingcf.jsdelivr.net/gh/666OS/rules@release/mihomo/domain/Download.mrs
-    path: ./rule_set/Download.mrs
+    url: https://testingcf.jsdelivr.net/gh/Seameee/clash-ruleset@refs/heads/release/domainset/download.mrs
+    path: ./rule_set/download_domainset.mrs
+
+  download_ip:
+    <<: *RuleSet_ipcidr_mrs
+    url: https://testingcf.jsdelivr.net/gh/Seameee/clash-ruleset@refs/heads/release/ip/download.mrs
+    path: ./rule_set/download_ip.mrs
 
   lan:
     <<: *RuleSet_domain_mrs
@@ -255,7 +260,8 @@ rules:
   - RULE-SET,apple-cn,DIRECT
   - RULE-SET,microsoft-cn,DIRECT
   - RULE-SET,google-cn,DIRECT
-  - RULE-SET,download,下载服务
+  - RULE-SET,download_domainset,下载服务
+  - RULE-SET,download_ip,下载服务
   - RULE-SET,google_non_ip,谷歌服务
   - RULE-SET,googlefcm_non_ip,谷歌服务
   - RULE-SET,proxy,节点选择

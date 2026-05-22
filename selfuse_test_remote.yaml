@@ -33,7 +33,7 @@ dns:
         - https://dns.pub/dns-query
     fake-ip-range: 198.18.0.1/16
     fake-ip-filter: ['rule-set:fakeip-filter,trackerslist,private,cn']
-    nameserver-policy: {'rule-set:reject_non_ip,reject_domainset,reject_non_ip_drop,reject_non_ip_no_drop': [rcode://success]}
+    nameserver-policy: {'rule-set:ads': [rcode://success]}
 
 ### 域名嗅探
 sniffer:

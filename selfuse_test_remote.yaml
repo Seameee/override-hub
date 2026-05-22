@@ -138,198 +138,139 @@ rule-providers:
   fakeip-filter:
     <<: *RuleSet_domain_mrs
     url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/fakeip-filter.mrs
-    path: ./rule_set/other_ruleset/fakeip-filter.mrs
+    path: ./rule_set/fakeip-filter.mrs
 
   cn:
     <<: *RuleSet_domain_mrs
     url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/cn.mrs
-    path: ./rule_set/other_ruleset/cn.mrs
+    path: ./rule_set/cn.mrs
 
   private:
     <<: *RuleSet_domain_mrs
     url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/private.mrs
-    path: ./rule_set/other_ruleset/private.mrs
+    path: ./rule_set/private.mrs
 
   trackerslist:
     <<: *RuleSet_domain_mrs
     url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/trackerslist.mrs
-    path: ./rule_set/other_ruleset/trackerslist.mrs
+    path: ./rule_set/trackerslist.mrs
 
-  reject_non_ip_no_drop:
-    <<: *RuleSet_classical
-    url: https://ruleset.skk.moe/Clash/non_ip/reject-no-drop.txt
-    path: ./rule_set/sukkaw_ruleset/reject_non_ip_no_drop.txt
+  ads:
+    <<: *RuleSet_domain_mrs
+    url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/ads.mrs
+    path: ./rule_set/ads.mrs
 
-  reject_non_ip_drop:
-    <<: *RuleSet_classical
-    url: https://ruleset.skk.moe/Clash/non_ip/reject-drop.txt
-    path: ./rule_set/sukkaw_ruleset/reject_non_ip_drop.txt
+  media:
+    <<: *RuleSet_domain_mrs
+    url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/media.mrs
+    path: ./rule_set/media.mrs
 
-  reject_non_ip:
-    <<: *RuleSet_classical
-    url: https://ruleset.skk.moe/Clash/non_ip/reject.txt
-    path: ./rule_set/sukkaw_ruleset/reject_non_ip.txt
+  ai:
+    <<: *RuleSet_domain_mrs
+    url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/ai.mrs
+    path: ./rule_set/ai.mrs
 
-  reject_domainset:
-    <<: *RuleSet_domain
-    url: https://ruleset.skk.moe/Clash/domainset/reject.txt
-    path: ./rule_set/sukkaw_ruleset/reject_domainset.txt
+  telegram:
+    <<: *RuleSet_domain_mrs
+    url: https://testingcf.jsdelivr.net/gh/666OS/rules@release/mihomo/domain/Telegram.mrs
+    path: ./rule_set/Telegram.mrs
 
-  reject_ip:
-    <<: *RuleSet_classical
-    url: https://ruleset.skk.moe/Clash/ip/reject.txt
-    path: ./rule_set/sukkaw_ruleset/reject_ip.txt
+  microsoft-cn:
+    <<: *RuleSet_domain_mrs
+    url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/microsoft-cn.mrs
+    path: ./rule_set/microsoft-cn.mrs
 
-  # 所有流媒体（包括上述所有流媒体）
-  stream_non_ip:
-    <<: *RuleSet_classical
-    url: https://ruleset.skk.moe/Clash/non_ip/stream.txt
-    path: ./rule_set/sukkaw_ruleset/stream_non_ip.txt
+  apple-cn:
+    <<: *RuleSet_domain_mrs
+    url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/apple-cn.mrs
+    path: ./rule_set/apple-cn.mrs
 
-  stream_ip:
-    <<: *RuleSet_classical
-    url: https://ruleset.skk.moe/Clash/ip/stream.txt
-    path: ./rule_set/sukkaw_ruleset/stream_ip.txt
+  google-cn:
+    <<: *RuleSet_domain_mrs
+    url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/google-cn.mrs
+    path: ./rule_set/google-cn.mrs
 
-  ai_non_ip:
-    <<: *RuleSet_classical
-    url: https://ruleset.skk.moe/Clash/non_ip/ai.txt
-    path: ./rule_set/sukkaw_ruleset/ai_non_ip.txt
+  download:
+    <<: *RuleSet_domain_mrs
+    url: https://testingcf.jsdelivr.net/gh/666OS/rules@release/mihomo/domain/Download.mrs
+    path: ./rule_set/Download.mrs
 
-  telegram_non_ip:
-    <<: *RuleSet_classical
-    url: https://ruleset.skk.moe/Clash/non_ip/telegram.txt
-    path: ./rule_set/sukkaw_ruleset/telegram_non_ip.txt
+  lan:
+    <<: *RuleSet_domain_mrs
+    url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/private.mrs
+    path: ./rule_set/lan.mrs
 
-  telegram_ip:
-    <<: *RuleSet_classical
-    url: https://ruleset.skk.moe/Clash/ip/telegram.txt
-    path: ./rule_set/sukkaw_ruleset/telegram_ip.txt
+  proxy:
+    <<: *RuleSet_domain_mrs
+    url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/proxy.mrs
+    path: ./rule_set/proxy.mrs
 
-  apple_cdn:
-    <<: *RuleSet_domain
-    url: https://ruleset.skk.moe/Clash/domainset/apple_cdn.txt
-    path: ./rule_set/sukkaw_ruleset/apple_cdn.txt
+  privateip:
+    <<: *RuleSet_ipcidr_mrs
+    url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/privateip.mrs
+    path: ./rule_set/privateip.mrs
 
-  apple_services:
-    <<: *RuleSet_classical
-    url: https://ruleset.skk.moe/Clash/non_ip/apple_services.txt
-    path: ./rule_set/sukkaw_ruleset/apple_services.txt
+  cnip:
+    <<: *RuleSet_ipcidr_mrs
+    url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/cnip.mrs
+    path: ./rule_set/cnip.mrs
 
-  apple_cn_non_ip:
-    <<: *RuleSet_classical
-    url: https://ruleset.skk.moe/Clash/non_ip/apple_cn.txt
-    path: ./rule_set/sukkaw_ruleset/apple_cn_non_ip.txt
-  
-  microsoft_cdn_non_ip:
-    <<: *RuleSet_classical
-    url: https://ruleset.skk.moe/Clash/non_ip/microsoft_cdn.txt
-    path: ./rule_set/sukkaw_ruleset/microsoft_cdn_non_ip.txt
+  telegramip:
+    <<: *RuleSet_ipcidr_mrs
+    url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/telegramip.mrs
+    path: ./rule_set/telegramip.mrs
 
-  microsoft_non_ip:
-    <<: *RuleSet_classical
-    url: https://ruleset.skk.moe/Clash/non_ip/microsoft.txt
-    path: ./rule_set/sukkaw_ruleset/microsoft_non_ip.txt
+  mediaip:
+    <<: *RuleSet_ipcidr_mrs
+    url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/mediaip.mrs
+    path: ./rule_set/mediaip.mrs
+
+  emby:
+    <<: *RuleSet_domain_mrs
+    url: https://testingcf.jsdelivr.net/gh/666OS/rules@release/mihomo/domain/Emby.mrs
+    path: ./rule_set/Emby.mrs
 
   google_non_ip:
     <<: *RuleSet_domain_mrs
     url: https://testingcf.jsdelivr.net/gh/QuixoticHeart/rule-set@refs/heads/ruleset/meta/domain/google.mrs
-    path: ./rule_set/other_ruleset/google.mrs
-  
+    path: ./rule_set/google.mrs
+
   googlefcm_non_ip:
     <<: *RuleSet_domain_mrs
     url: https://testingcf.jsdelivr.net/gh/QuixoticHeart/rule-set@refs/heads/ruleset/meta/domain/googlefcm.mrs
-    path: ./rule_set/other_ruleset/googlefcm.mrs
+    path: ./rule_set/googlefcm.mrs
 
   google_ip:
     <<: *RuleSet_ipcidr_mrs
     url: https://testingcf.jsdelivr.net/gh/QuixoticHeart/rule-set@refs/heads/ruleset/meta/ipcidr/google.mrs
-    path: ./rule_set/other_ruleset/google_ip.mrs
+    path: ./rule_set/google_ip.mrs
 
   googlefcm_ip:
     <<: *RuleSet_ipcidr_mrs
     url: https://testingcf.jsdelivr.net/gh/QuixoticHeart/rule-set@refs/heads/ruleset/meta/ipcidr/googlefcm.mrs
-    path: ./rule_set/other_ruleset/googlefcm_ip.mrs
+    path: ./rule_set/googlefcm_ip.mrs
 
-  # 软件更新、操作系统等大文件下载
-  download_domainset:
-    <<: *RuleSet_domain
-    url: https://ruleset.skk.moe/Clash/domainset/download.txt
-    path: ./rule_set/sukkaw_ruleset/download_domainset.txt
-
-  download_non_ip:
-    <<: *RuleSet_domain
-    url: https://ruleset.skk.moe/Clash/non_ip/download.txt
-    path: ./rule_set/sukkaw_ruleset/download_non_ip.txt
-
-  # 内网域名和局域网 IP
-  lan_non_ip:
-    <<: *RuleSet_classical
-    url: https://ruleset.skk.moe/Clash/non_ip/lan.txt
-    path: ./rule_set/sukkaw_ruleset/lan_non_ip.txt
-
-  lan_ip:
-    <<: *RuleSet_classical
-    url: https://ruleset.skk.moe/Clash/ip/lan.txt
-    path: ./rule_set/sukkaw_ruleset/lan_ip.txt
-  
-  domestic_non_ip:
-    <<: *RuleSet_classical
-    url: https://ruleset.skk.moe/Clash/non_ip/domestic.txt
-    path: ./rule_set/sukkaw_ruleset/domestic_non_ip.txt
-
-  direct_non_ip:
-    <<: *RuleSet_classical
-    url: https://ruleset.skk.moe/Clash/non_ip/direct.txt
-    path: ./rule_set/sukkaw_ruleset/direct_non_ip.txt
-
-  global_non_ip:
-    <<: *RuleSet_classical
-    url: https://ruleset.skk.moe/Clash/non_ip/global.txt
-    path: ./rule_set/sukkaw_ruleset/global_non_ip.txt
-
-  domestic_ip:
-    <<: *RuleSet_classical
-    url: https://ruleset.skk.moe/Clash/ip/domestic.txt
-    path: ./rule_set/sukkaw_ruleset/domestic_ip.txt
-
-  china_ip:
-    <<: *RuleSet_ipcidr
-    url: https://testingcf.jsdelivr.net/gh/Seameee/override-hub@refs/heads/main/mergecnip/china_ip.txt
-    path: ./rule_set/other_ruleset/china_ip.txt
 
 ### 分流规则
 rules:
-  # 非 IP 类规则
-  - RULE-SET,reject_non_ip,REJECT
-  - RULE-SET,reject_domainset,REJECT
-  - RULE-SET,reject_non_ip_drop,REJECT-DROP
-  - RULE-SET,reject_non_ip_no_drop,REJECT
-  - RULE-SET,ai_non_ip,人工智能
-  - RULE-SET,stream_non_ip,国外媒体
-  - RULE-SET,telegram_non_ip,电报信息
-  - RULE-SET,apple_cdn,DIRECT
-  - RULE-SET,download_domainset,下载服务
-  - RULE-SET,download_non_ip,下载服务
-  - RULE-SET,microsoft_cdn_non_ip,DIRECT
-  - RULE-SET,apple_cn_non_ip,DIRECT
-  - RULE-SET,apple_services,苹果服务
+  - RULE-SET,ads,REJECT
+  - RULE-SET,ai,人工智能
+  - RULE-SET,media,国外媒体
+  - RULE-SET,emby,国外媒体
+  - RULE-SET,telegram,电报信息
+  - RULE-SET,apple-cn,DIRECT
+  - RULE-SET,microsoft-cn,DIRECT
+  - RULE-SET,google-cn,DIRECT
+  - RULE-SET,download,下载服务
   - RULE-SET,google_non_ip,谷歌服务
   - RULE-SET,googlefcm_non_ip,谷歌服务
-  - RULE-SET,microsoft_non_ip,微软服务
-  - RULE-SET,global_non_ip,节点选择
-  - RULE-SET,domestic_non_ip,DIRECT
+  - RULE-SET,proxy,节点选择
   - RULE-SET,cn,DIRECT
-  - RULE-SET,direct_non_ip,DIRECT
-  - RULE-SET,lan_non_ip,DIRECT
-
-  # IP 类规则
-  - RULE-SET,reject_ip,REJECT
-  - RULE-SET,telegram_ip,电报信息,no-resolve
-  - RULE-SET,stream_ip,国外媒体
+  - RULE-SET,lan,DIRECT
+  - RULE-SET,telegramip,电报信息,no-resolve
+  - RULE-SET,mediaip,国外媒体
   - RULE-SET,google_ip,谷歌服务,no-resolve
   - RULE-SET,googlefcm_ip,谷歌服务,no-resolve
-  - RULE-SET,lan_ip,DIRECT,no-resolve
-  - RULE-SET,domestic_ip,DIRECT
-  - RULE-SET,china_ip,DIRECT
+  - RULE-SET,privateip,DIRECT,no-resolve
+  - RULE-SET,cnip,DIRECT
   - MATCH,节点选择

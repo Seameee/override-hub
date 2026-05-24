@@ -179,11 +179,6 @@ rule-providers:
     url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/apple-cn.mrs
     path: ./rule_set/apple-cn.mrs
 
-  google-cn:
-    <<: *RuleSet_domain_mrs
-    url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/google-cn.mrs
-    path: ./rule_set/google-cn.mrs
-
   download_domainset:
     <<: *RuleSet_domain_mrs
     url: https://testingcf.jsdelivr.net/gh/Seameee/clash-ruleset@refs/heads/release/domainset/download.mrs
@@ -194,10 +189,10 @@ rule-providers:
     url: https://testingcf.jsdelivr.net/gh/Seameee/clash-ruleset@refs/heads/release/ip/download.mrs
     path: ./rule_set/download_ip.mrs
 
-  lan:
+  private:
     <<: *RuleSet_domain_mrs
     url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/private.mrs
-    path: ./rule_set/lan.mrs
+    path: ./rule_set/private.mrs
 
   proxy:
     <<: *RuleSet_domain_mrs
@@ -252,21 +247,24 @@ rule-providers:
 
 ### 分流规则
 rules:
+  # 非 IP 类规则
   - RULE-SET,ads,REJECT
   - RULE-SET,ai,人工智能
   - RULE-SET,media,国外媒体
   - RULE-SET,emby,国外媒体
   - RULE-SET,telegram,电报信息
-  - RULE-SET,apple-cn,DIRECT
-  - RULE-SET,microsoft-cn,DIRECT
-  - RULE-SET,google-cn,DIRECT
   - RULE-SET,download_domainset,下载服务
   - RULE-SET,download_ip,下载服务
+  - RULE-SET,microsoft-cn,DIRECT
+  - RULE-SET,apple-cn,苹果服务
   - RULE-SET,google_non_ip,谷歌服务
   - RULE-SET,googlefcm_non_ip,谷歌服务
+  - RULE-SET,microsoft-cn,微软服务
   - RULE-SET,proxy,节点选择
   - RULE-SET,cn,DIRECT
-  - RULE-SET,lan,DIRECT
+  - RULE-SET,private,DIRECT
+
+  # IP 类规则
   - RULE-SET,telegramip,电报信息,no-resolve
   - RULE-SET,mediaip,国外媒体
   - RULE-SET,google_ip,谷歌服务,no-resolve

@@ -249,7 +249,6 @@ rules:
   - RULE-SET,emby,国外媒体
   - RULE-SET,telegram,电报信息
   - RULE-SET,download_domainset,下载服务
-  - RULE-SET,download_ip,下载服务
   - RULE-SET,microsoft-cn,DIRECT
   - RULE-SET,apple-cn,苹果服务
   - RULE-SET,google_non_ip,谷歌服务
@@ -260,6 +259,7 @@ rules:
   - RULE-SET,private,DIRECT
 
   # IP 类规则
+  - RULE-SET,download_ip,下载服务
   - RULE-SET,telegramip,电报信息,no-resolve
   - RULE-SET,mediaip,国外媒体
   - RULE-SET,google_ip,谷歌服务,no-resolve

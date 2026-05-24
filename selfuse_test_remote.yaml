@@ -195,11 +195,6 @@ rule-providers:
     url: https://testingcf.jsdelivr.net/gh/Seameee/clash-ruleset@refs/heads/release/ip/download.mrs
     path: ./rule_set/download_ip.mrs
 
-  private:
-    <<: *RuleSet_domain_mrs
-    url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/private.mrs
-    path: ./rule_set/private.mrs
-
   proxy:
     <<: *RuleSet_domain_mrs
     url: https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/proxy.mrs
